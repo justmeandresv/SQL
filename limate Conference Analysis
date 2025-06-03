@@ -1,0 +1,44 @@
+Climate Conference Project
+Database: https://www.db-fiddle.com/f/pxMci1sLL945KHKYvpe9W6/1
+
+Left join: Here I am using a left join to gather info on which VIPs have rsvp'd to events.
+SELECT vips.last_name
+,vips.first_name
+FROM vips
+LEFT JOIN reservations res
+ON vips.member_id=res.member_id
+WHERE welcome_rsvp=1
+AND dinner_rsvp=1;
+
+Inner Join: Here I'm using an inner join to obtain info on which members are staying at which hotel along with hotel info.
+SELECT res.member_id
+,hotels.hotel_name
+,hotels.address
+FROM hotels
+INNER JOIN reservations res
+ON res.hotel=hotels.hotel_id
+;
+
+Right join: I'm using a right join here to get more detailed info on which members are at which hotel and their names.
+SELECT res.member_id
+,vips.first_name
+,vips.last_name
+,hotels.hotel_name
+FROM reservations res
+RIGHT JOIN vips 
+ON  res.member_id=vips.member_id
+INNER JOIN hotels
+ON hotels.hotel_id=res.hotel;
+
+Inner query: I am using a nested query here to narrow down which events are a part of the research division.
+SELECT DISTINCT event_name
+FROM events
+WHERE event_id IN(SELECT event 
+                  FROM vips
+                  WHERE assoc_type='research');
+                  
+Inner query: I am once again using an nested query to show who gives feedback and who receives feedback for events.
+SELECT member_id, first_name, last_name, provides_feedback_to
+FROM vips
+WHERE member_id IN (SELECT  provides_feedback_to
+                    FROM vips) 
